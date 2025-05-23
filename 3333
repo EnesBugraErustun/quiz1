@@ -1,0 +1,90 @@
+<?php
+if (!isset($_POST['count']) || !is_numeric($_POST['count']) || intval($_POST['count']) <= 0) {
+    echo "Geçersiz oyuncu sayısı.";
+    exit();
+}
+
+$count = intval($_POST['count']);
+$players = [];
+
+for ($i = 1; $i <= $count; $i++) {
+    $nameKey = "player$i";
+    if (!isset($_POST[$nameKey]) || trim($_POST[$nameKey]) === '') {
+        echo "Tüm oyuncu isimlerini doldurmanız gerekiyor.";
+        exit();
+    }
+    $players[] = htmlspecialchars(trim($_POST[$nameKey]));
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MXG Chess Game Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            text-align: center;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        td, th {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .italic {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h2>MXG Chess Game Simulator</h2>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Player 1</th>
+            <th>Score</th>
+            <th>Player 2</th>
+        </tr>
+        <?php
+        $matchIndex = 1;
+        $scores = ["1-0", "0-1", "1/2-1/2"];
+        for ($i = 0; $i < count($players); $i++) {
+            for ($j = $i + 1; $j < count($players); $j++) {
+                $score = $scores[array_rand($scores)];
+                $player1 = $players[$i];
+                $player2 = $players[$j];
+
+                // Formatlama
+                if ($score == "1-0") {
+                    $p1 = "<span class='bold'>$player1</span>";
+                    $p2 = $player2;
+                } elseif ($score == "0-1") {
+                    $p1 = $player1;
+                    $p2 = "<span class='bold'>$player2</span>";
+                } else {
+                    $p1 = "<span class='italic'>$player1</span>";
+                    $p2 = "<span class='italic'>$player2</span>";
+                }
+
+                echo "<tr>
+                        <td>$matchIndex</td>
+                        <td>$p1</td>
+                        <td>$score</td>
+                        <td>$p2</td>
+                      </tr>";
+                $matchIndex++;
+            }
+        }
+        ?>
+    </table>
+</body>
+</html>
