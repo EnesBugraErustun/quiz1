@@ -1,0 +1,75 @@
+<?php
+// Geçersiz ya da eksik giriş varsa kullanıcıyı geri yönlendir
+if (!isset($_GET['count']) || !is_numeric($_GET['count']) || intval($_GET['count']) <= 0) {
+    header("Location: page1.php");
+    exit();
+}
+
+$count = intval($_GET['count']);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MXG Chess Game Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            text-align: center;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+        }
+        td, th {
+            padding: 10px;
+        }
+        input[type="text"] {
+            padding: 5px;
+            width: 200px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            const inputs = document.querySelectorAll('input[name^="player"]');
+            const errorMsg = document.getElementById("error");
+            for (let input of inputs) {
+                if (!input.value.trim()) {
+                    errorMsg.textContent = "Lütfen tüm oyuncu isimlerini doldurun.";
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h2>MXG Chess Game Simulator</h2>
+    <form action="page3.php" method="POST" onsubmit="return validateForm()">
+        <label>The number of chess players:</label><br>
+        <input type="text" name="count" value="<?php echo $count; ?>" readonly><br><br>
+
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Player Name</th>
+            </tr>
+            <?php for ($i = 1; $i <= $count; $i++): ?>
+                <tr>
+                    <td><?php echo $i; ?></td>
+                    <td><input type="text" name="player<?php echo $i; ?>"></td>
+                </tr>
+            <?php endfor; ?>
+        </table><br>
+
+        <input type="submit" value="Generate Tournament">
+        <div class="error" id="error"></div>
+    </form>
+</body>
+</html>
